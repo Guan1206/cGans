@@ -52,6 +52,7 @@ def read_tactile(file):
     np.random.shuffle(label_list)
     return data_list, label_list
 
+# 可以和reading tactile 写成一个，刚开始因为目录结构不同写两个
 def read_visual(file):
     data_list = []
     label_list = []
@@ -78,6 +79,8 @@ def get_Tdict(file):
     for i in range(len(data)):
         dict[data[i]] = label[i]
     return dict 
+
+# 和get_Tdict写成一个
 
 def get_Vdict(file):
     dict = {} #生成字典,名字：类别
@@ -115,6 +118,7 @@ def read_image(reading_path):
     imgs = np.array(imgs)
     imgs = imgs.reshape(-1,224,224,3)
     return imgs
+
 
 def read_tactile_image(reading_path):
     imgs = []
@@ -359,4 +363,4 @@ save_dir = '/home/guan/Desktop/cgan/generated5'
 
 
 
-train(visual_path,tactile_path,epochs = 150, batch_size= 8)
+train(visual_path,tactile_path,epochs = 100, batch_size= 8)
