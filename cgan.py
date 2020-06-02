@@ -33,7 +33,7 @@ config = tf.ConfigProto()
 config.gpu_options.allow_growth=True   #不全部占满显存, 按需分配
 sess = tf.Session(config=config)
 
-def read_tactile(file):
+def read_dir(file):
     data_list = []
     label_list = []
     classes_name = os.listdir(file)
@@ -53,45 +53,20 @@ def read_tactile(file):
     return data_list, label_list
 
 # 可以和reading tactile 写成一个，刚开始因为目录结构不同写两个
-def read_visual(file):
-    data_list = []
-    label_list = []
-    classes_name = os.listdir(file)
-    classes_name = np.array(classes_name)
-    classes_name = np.sort(classes_name)
-    class_dict = {label:index for index,label in enumerate(classes_name)} #生成字典,名字：类别
-    for class_name in classes_name:
-        imgs_path = os.path.join(file,class_name)
-        imgs_name = glob(os.path.join(imgs_path, "*.png"))
-        data_list += imgs_name
-        label_list += [class_dict[class_name] for i in range (len(imgs_name))]
-
-    np.random.seed(12)
-    np.random.shuffle(data_list)
-    np.random.seed(12)
-    np.random.shuffle(label_list)
-    return data_list, label_list
 
 
-def get_Tdict(file):
+def get_dict(file):
     dict = {} #生成字典,名字：类别
-    data, label = read_tactile(file)
+    data, label = read_dir(file)
     for i in range(len(data)):
         dict[data[i]] = label[i]
     return dict 
 
 # 和get_Tdict写成一个
 
-def get_Vdict(file):
-    dict = {} #生成字典,名字：类别
-    data, label = read_visual(file)
-    for i in range(len(data)):
-        dict[data[i]] = label[i]
-    return dict 
-
 def get_paired (visual, tactile):
-    V_dict = get_Vdict(visual)
-    T_dict = get_Tdict(tactile)
+    V_dict = get_dict(visual)
+    T_dict = get_dict(tactile)
     data = []
     label = []
     for key, value in T_dict.items():
@@ -127,7 +102,6 @@ def read_tactile_image(reading_path):
         img = cv2.imread(single_path)
         img = np.array(img)
         img = img/255
-        # img = img[128:128+224, 208:208+224]
         imgs.append(img)
         
     imgs = np.array(imgs)
